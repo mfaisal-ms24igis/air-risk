@@ -11,7 +11,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Google Earth Engine](https://img.shields.io/badge/Google_Earth_Engine-API-yellow.svg)](https://earthengine.google.com/)
 [![PostGIS](https://img.shields.io/badge/PostGIS-3.3-blue.svg)](https://postgis.net/)
-[![License](https://img.shields.io/badge/License-Academic-red.svg)]()
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)]()
 
 [Features](#-key-features) • [Tech Stack](#-technology-stack) • [Quick Start](#-quick-start) • [Architecture](#-system-architecture) • [Documentation](#-documentation)
 
@@ -21,7 +21,7 @@
 
 ## 🎯 Project Impact
 
-> **MS GIS Thesis Project** - Addressing Pakistan's critical air quality monitoring crisis
+> **Independent Research & Development Project** - Addressing Pakistan's critical air quality monitoring crisis
 
 - 🌐 **240 million people** served by fewer than 100 ground monitoring stations
 - 📍 **160+ districts** now covered with comprehensive air quality data
@@ -529,23 +529,20 @@ npm run lint
 
 ---
 
-## 🎓 Academic Context
+## � Research & Innovation
 
-This project is an **MS GIS thesis** at the National University of Sciences and Technology (NUST), Pakistan, addressing the critical gap in air quality monitoring infrastructure across the country.
+This project addresses the critical gap in air quality monitoring infrastructure across Pakistan through innovative use of satellite-ground data fusion.
 
-### Research Questions
-1. How can satellite and ground-based monitoring be adaptively fused to maximize coverage in resource-constrained environments?
-2. What is the computational efficiency of cloud-based exposure assessment vs. traditional local processing?
-3. Can geographically weighted regression effectively calibrate satellite estimates in data-sparse regions?
+### Key Research Areas
+1. Adaptive fusion algorithms for heterogeneous monitoring networks in resource-constrained environments
+2. Cloud-based exposure assessment leveraging Google Earth Engine's planetary-scale infrastructure
+3. Geographically weighted regression for calibrating satellite estimates in data-sparse regions
 
-### Key Contributions
-- **Novel adaptive fusion algorithm** for heterogeneous monitoring networks
-- **Cloud-native exposure assessment** translating research methods into operational public health infrastructure
-- **Open-source implementation** enabling replication in other developing countries with similar monitoring gaps
-
-### Publications (In Progress)
-- Conference paper on adaptive fusion submitted to **GIScience 2026**
-- Journal article on cloud-based exposure assessment for **International Journal of Environmental Research and Public Health**
+### Technical Contributions
+- **Novel adaptive fusion algorithm** optimizing data source selection based on local monitoring density
+- **Cloud-native exposure assessment** achieving >90% bandwidth reduction through server-side processing
+- **Open-source implementation** enabling deployment in other developing countries with similar monitoring challenges
+- **Scalable architecture** supporting <$500/month operational cost vs. $15K+ per physical monitor
 
 ---
 
@@ -576,7 +573,12 @@ See [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md) for detailed production deplo
 
 ## 🤝 Contributing
 
-This is an academic thesis project. Contributions welcome after thesis defense completion (expected Q2 2026).
+Contributions are welcome! This is an open-source project aimed at improving air quality monitoring in resource-constrained regions.
+
+To contribute:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
 For questions or collaboration inquiries, please open an issue.
 
@@ -584,11 +586,11 @@ For questions or collaboration inquiries, please open an issue.
 
 ## 📄 License
 
-**Academic/Research Use Only** - All Rights Reserved
+**MIT License** - Open Source
 
-This project is part of an MS thesis at NUST Pakistan. The code and associated research outputs are not licensed for commercial use without explicit permission.
+This project is open-source and available for use, modification, and distribution under the MIT License.
 
-For academic or research collaboration, please contact the author.
+For commercial partnerships or custom deployments, please contact the maintainer.
 
 ---
 
@@ -604,10 +606,10 @@ For academic or research collaboration, please contact the author.
 
 ## 📧 Contact
 
-**Author**: [Your Name]  
-**Institution**: National University of Sciences and Technology (NUST), Pakistan  
-**Program**: MS GIS  
-**Email**: [your.email@example.com]
+**Developer**: Muhammad Faisal  
+**GitHub**: [@mfaisal-ms24igis](https://github.com/mfaisal-ms24igis)  
+**Project**: Air Quality Intelligence Platform for Pakistan  
+**Email**: Contact via GitHub
 
 ---
 
