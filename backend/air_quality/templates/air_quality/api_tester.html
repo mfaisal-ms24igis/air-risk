@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .api-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            color: #f39c12;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .success {
+            color: #27ae60;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            width: 200px;
+        }
+        .stats {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Air Quality API Tester</h1>
+
+    <div class="container">
+        <div class="stats">
+            <h3>API Base URL: {{ base_url }}</h3>
+            <p>Test the various endpoints of the Air Quality API</p>
+        </div>
+
+        <!-- Districts API -->
+        <div class="api-section">
+            <h3>Districts API</h3>
+            <p>Get administrative districts with population data</p>
+            <button onclick="testEndpoint('districts', '/api/v1/air-quality/districts/')">List All Districts</button>
+            <button onclick="testEndpoint('districts-geojson', '/api/v1/air-quality/districts/?format=geojson')">Districts as GeoJSON</button>
+            <div id="districts-response" class="response"></div>
+        </div>
+
+        <!-- Provinces API -->
+        <div class="api-section">
+            <h3>Provinces API</h3>
+            <p>Get administrative provinces with population data</p>
+            <button onclick="testEndpoint('provinces', '/api/v1/air-quality/provinces/')">List All Provinces</button>
+            <button onclick="testEndpoint('provinces-geojson', '/api/v1/air-quality/provinces/?format=geojson')">Provinces as GeoJSON</button>
+            <div id="provinces-response" class="response"></div>
+        </div>
+
+        <!-- Population Raster API -->
+        <div class="api-section">
+            <h3>Population Raster API</h3>
+            <p>Get WorldPop population raster metadata and statistics</p>
+            <button onclick="testEndpoint('population', '/api/v1/air-quality/population/')">Population Raster Info</button>
+            <button onclick="testEndpoint('population-download', '/api/v1/air-quality/population/download/', true)">Download Population Raster</button>
+            <div id="population-response" class="response"></div>
+        </div>
+
+        <!-- Point Value API -->
+        <div class="api-section">
+            <h3>Point Value API</h3>
+            <p>Get air quality values at specific coordinates</p>
+            <div class="form-group">
+                <label for="lat">Latitude:</label>
+                <input type="number" id="lat" step="0.0001" value="33.6844" placeholder="e.g., 33.6844">
+            </div>
+            <div class="form-group">
+                <label for="lng">Longitude:</label>
+                <input type="number" id="lng" step="0.0001" value="73.0479" placeholder="e.g., 73.0479">
+            </div>
+            <div class="form-group">
+                <label for="pollutant">Pollutant:</label>
+                <select id="pollutant">
+                    <option value="PM25">PM2.5</option>
+                    <option value="PM10">PM10</option>
+                    <option value="NO2">NO2</option>
+                    <option value="SO2">SO2</option>
+                    <option value="O3">O3</option>
+                    <option value="CO">CO</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="datetime">Date/Time:</label>
+                <input type="datetime-local" id="datetime" value="2024-01-01T12:00">
+            </div>
+            <button onclick="testPointValue()">Get Point Value</button>
+            <div id="point-response" class="response"></div>
+        </div>
+
+        <!-- Time Series API -->
+        <div class="api-section">
+            <h3>Time Series API</h3>
+            <p>Get air quality time series for a location</p>
+            <div class="form-group">
+                <label for="ts-lat">Latitude:</label>
+                <input type="number" id="ts-lat" step="0.0001" value="33.6844">
+            </div>
+            <div class="form-group">
+                <label for="ts-lng">Longitude:</label>
+                <input type="number" id="ts-lng" step="0.0001" value="73.0479">
+            </div>
+            <div class="form-group">
+                <label for="ts-pollutant">Pollutant:</label>
+                <select id="ts-pollutant">
+                    <option value="PM25">PM2.5</option>
+                    <option value="PM10">PM10</option>
+                    <option value="NO2">NO2</option>
+                    <option value="SO2">SO2</option>
+                    <option value="O3">O3</option>
+                    <option value="CO">CO</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" value="2024-01-01">
+            </div>
+            <div class="form-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" value="2024-01-07">
+            </div>
+            <button onclick="testTimeSeries()">Get Time Series</button>
+            <div id="timeseries-response" class="response"></div>
+        </div>
+
+        <!-- AQI Legend API -->
+        <div class="api-section">
+            <h3>AQI Legend API</h3>
+            <p>Get AQI color legend and breakpoints</p>
+            <button onclick="testEndpoint('legend', '/api/v1/air-quality/legend/')">Get AQI Legend</button>
+            <div id="legend-response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = '{{ base_url }}';
+
+        function showResponse(elementId, data, isDownload = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+
+            if (isDownload) {
+                element.innerHTML = '<div class="success">Download initiated. Check your downloads folder.</div>';
+                return;
+            }
+
+            if (typeof data === 'string') {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    element.innerHTML = `<div class="error">Failed to parse response: ${data}</div>`;
+                    return;
+                }
+            }
+
+            element.innerHTML = `<pre class="success">${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        function showError(elementId, error) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="error">Error: ${error}</div>`;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="loading">Loading...</div>';
+        }
+
+        async function testEndpoint(responseId, url, isDownload = false) {
+            showLoading(responseId);
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                if (isDownload) {
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = 'population_raster.tiff';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(downloadUrl);
+                    document.body.removeChild(a);
+                    showResponse(responseId, null, true);
+                } else {
+                    const data = await response.json();
+                    showResponse(responseId, data);
+                }
+            } catch (error) {
+                showError(responseId, error.message);
+            }
+        }
+
+        async function testPointValue() {
+            const lat = document.getElementById('lat').value;
+            const lng = document.getElementById('lng').value;
+            const pollutant = document.getElementById('pollutant').value;
+            const datetime = document.getElementById('datetime').value;
+
+            if (!lat || !lng || !datetime) {
+                showError('point-response', 'Please fill in all fields');
+                return;
+            }
+
+            showLoading('point-response');
+
+            const url = `/api/v1/air-quality/point/?lat=${lat}&lng=${lng}&pollutant=${pollutant}&datetime=${datetime}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                showResponse('point-response', data);
+            } catch (error) {
+                showError('point-response', error.message);
+            }
+        }
+
+        async function testTimeSeries() {
+            const lat = document.getElementById('ts-lat').value;
+            const lng = document.getElementById('ts-lng').value;
+            const pollutant = document.getElementById('ts-pollutant').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            if (!lat || !lng || !startDate || !endDate) {
+                showError('timeseries-response', 'Please fill in all fields');
+                return;
+            }
+
+            showLoading('timeseries-response');
+
+            const url = `/api/v1/air-quality/timeseries/?lat=${lat}&lng=${lng}&pollutant=${pollutant}&start_date=${startDate}&end_date=${endDate}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                showResponse('timeseries-response', data);
+            } catch (error) {
+                showError('timeseries-response', error.message);
+            }
+        }
+    </script>
+</body>
+</html>

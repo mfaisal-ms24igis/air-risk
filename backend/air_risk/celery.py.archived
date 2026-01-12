@@ -1,0 +1,77 @@
+"""
+Celery configuration for air_risk project.
+"""
+
+import os
+
+from celery import Celery
+from celery.schedules import crontab
+
+# Set the default Django settings module for the 'celery' program.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "air_risk.settings.dev")
+
+app = Celery("air_risk")
+
+# Using a string here means the worker doesn't have to serialize
+# the configuration object to child processes.
+app.config_from_object("django.conf:settings", namespace="CELERY")
+
+# Load task modules from all registered Django apps.
+app.autodiscover_tasks()
+
+# Celery Beat Schedule
+app.conf.beat_schedule = {
+    # Daily pipeline at 06:00 UTC
+    "fetch-and-process-daily-pipeline": {
+        "task": "air_quality.tasks.run_daily_ingestion_pipeline",
+        "schedule": crontab(hour=6, minute=0),
+        "options": {"queue": "gis"},
+    },
+    # Weekly model retraining on Sunday at 02:00 UTC
+    "retrain-correction-models-weekly": {
+        "task": "correction.tasks.retrain_all_models",
+        "schedule": crontab(hour=2, minute=0, day_of_week="sunday"),
+        "options": {"queue": "gis"},
+    },
+    # Daily scheduled report generation at 08:00 UTC
+    "generate-scheduled-reports-daily": {
+        "task": "reports.tasks.generate_scheduled_reports",
+        "schedule": crontab(hour=8, minute=0),
+        "options": {"queue": "default"},
+    },
+    # Hourly cleanup of old rasters (retain 90 days)
+    "cleanup-old-rasters-hourly": {
+        "task": "air_quality.tasks.cleanup_old_rasters",
+        "schedule": crontab(minute=30),
+        "options": {"queue": "default"},
+    },
+}
+
+# Task routing
+app.conf.task_routes = {
+    "air_quality.tasks.*": {"queue": "gis"},
+    "correction.tasks.*": {"queue": "gis"},
+    "exposure.tasks.*": {"queue": "gis"},
+    "reports.tasks.*": {"queue": "default"},
+    "users.tasks.*": {"queue": "default"},
+}
+
+# Task settings
+app.conf.task_serializer = "json"
+app.conf.result_serializer = "json"
+app.conf.accept_content = ["json"]
+app.conf.timezone = "UTC"
+app.conf.enable_utc = True
+
+# Task time limits
+app.conf.task_soft_time_limit = 3600  # 1 hour soft limit
+app.conf.task_time_limit = 3900  # 1 hour 5 minutes hard limit
+
+# Worker settings
+app.conf.worker_prefetch_multiplier = 1
+app.conf.worker_max_tasks_per_child = 50
+
+
+@app.task
+def debug_task():
+    return "updated"

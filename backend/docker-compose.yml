@@ -1,0 +1,134 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: air_risk_web
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - raster_data:/app/data/rasters
+      - worldpop_data:/app/data/worldpop
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=air_risk.settings.dev
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - air_risk_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: air_risk_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-air_risk}
+      - POSTGRES_USER=${POSTGRES_USER:-air_risk_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-air_risk_pass}
+    ports:
+      - "5432:5432"
+    networks:
+      - air_risk_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-air_risk_user} -d ${POSTGRES_DB:-air_risk}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - Used for Django caching (optional, not required for Django-Q)
+  # Django-Q uses PostgreSQL ORM as broker, so Redis is only for caching
+  redis:
+    image: redis:7-alpine
+    container_name: air_risk_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - air_risk_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Django-Q Cluster - Background task processing
+  # Uses PostgreSQL ORM as broker (no Redis dependency for tasks)
+  qcluster:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: air_risk_qcluster
+    command: python manage.py qcluster
+    volumes:
+      - .:/app
+      - raster_data:/app/data/rasters
+      - worldpop_data:/app/data/worldpop
+    environment:
+      - DJANGO_SETTINGS_MODULE=air_risk.settings.dev
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - air_risk_network
+    restart: unless-stopped
+
+  geoserver:
+    image: geonode/geoserver:2.27.3-latest
+    container_name: air_risk_geoserver
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+      - raster_data:/opt/geoserver/data_dir/rasters:ro
+      - ./geoserver/data_dir/styles:/opt/geoserver/data_dir/styles
+    ports:
+      - "8080:8080"
+    environment:
+      - GEOSERVER_ADMIN_USER=${GEOSERVER_ADMIN_USER:-admin}
+      - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD:-geoserver}
+      - INITIAL_MEMORY=1G
+      - MAXIMUM_MEMORY=2G
+      - STABLE_EXTENSIONS=importer,wps
+      - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - air_risk_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/geoserver/web/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  postgres_data:
+  redis_data:
+  geoserver_data:
+  static_volume:
+  media_volume:
+  raster_data:
+  worldpop_data:
+
+networks:
+  air_risk_network:
+    driver: bridge

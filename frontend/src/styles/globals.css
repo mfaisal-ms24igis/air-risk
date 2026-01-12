@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-space-navy-50: #E7EBF0;
+  --color-space-navy-100: #C3CDD8;
+  --color-space-navy-200: #9BACBD;
+  --color-space-navy-300: #738BA2;
+  --color-space-navy-400: #54728E;
+  --color-space-navy-500: #35597A;
+  --color-space-navy-600: #2F5172;
+  --color-space-navy-700: #284767;
+  --color-space-navy-800: #213D5D;
+  --color-space-navy-900: #152D4A;
+  --color-space-navy-950: #0A192F;
+  --color-tech-blue-50: #E6F7FF;
+  --color-tech-blue-100: #BAE7FF;
+  --color-tech-blue-200: #91D5FF;
+  --color-tech-blue-300: #69C0FF;
+  --color-tech-blue-400: #40A9FF;
+  --color-tech-blue-500: #0EA5E9;
+  --color-tech-blue-600: #0284C7;
+  --color-tech-blue-700: #0369A1;
+  --color-tech-blue-800: #075985;
+  --color-tech-blue-900: #0C4A6E;
+  --color-neon-green-50: #F0FDF4;
+  --color-neon-green-100: #DCFCE7;
+  --color-neon-green-200: #BBF7D0;
+  --color-neon-green-300: #86EFAC;
+  --color-neon-green-400: #4ADE80;
+  --color-neon-green-500: #22C55E;
+  --color-neon-green-600: #16A34A;
+  --color-neon-green-700: #15803D;
+  --color-neon-green-800: #166534;
+  --color-neon-green-900: #14532D;
+  --color-aqi-good: #22C55E;
+  --color-aqi-moderate: #FACC15;
+  --color-aqi-usg: #F97316;
+  --color-aqi-unhealthy: #EF4444;
+  --color-aqi-very-unhealthy: #A855F7;
+  --color-aqi-hazardous: #DC2626;
+  --color-glass-light: rgba(255, 255, 255, 0.05);
+  --color-glass-medium: rgba(255, 255, 255, 0.10);
+  --color-glass-heavy: rgba(255, 255, 255, 0.15);
+  --color-border: hsl(217 33% 17%);
+  --color-input: hsl(217 33% 17%);
+  --color-ring: hsl(224 76% 48%);
+  --color-background: hsl(210 100% 6%);
+  --color-foreground: hsl(213 31% 91%);
+  --color-primary: hsl(199 89% 48%);
+  --color-primary-foreground: hsl(210 40% 98%);
+  --color-secondary: hsl(142 71% 45%);
+  --color-secondary-foreground: hsl(144 61% 20%);
+  --color-muted: hsl(217 33% 17%);
+  --color-muted-foreground: hsl(215 20% 65%);
+  --color-accent: hsl(217 33% 17%);
+  --color-accent-foreground: hsl(213 31% 91%);
+  --color-destructive: hsl(0 63% 31%);
+  --color-destructive-foreground: hsl(210 40% 98%);
+  --color-card: hsl(217 33% 17%);
+  --color-card-foreground: hsl(213 31% 91%);
+  --color-popover: hsl(217 33% 17%);
+  --color-popover-foreground: hsl(213 31% 91%);
+  --shadow-glass: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+  --shadow-glass-heavy: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+  --shadow-neon-blue: 0 0 20px rgba(14, 165, 233, 0.5);
+  --shadow-neon-green: 0 0 20px rgba(34, 197, 94, 0.5);
+  --font-mono: JetBrains Mono, monospace;
+  --font-sans: Inter, sans-serif;
+}
+
+@layer base {
+  :root {
+    /* Light mode (minimal - app is dark by default) */
+    --background: 222 47% 11%;
+    --foreground: 213 31% 91%;
+    --card: 217 33% 17%;
+    --card-foreground: 213 31% 91%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 142 71% 45%;
+    --secondary-foreground: 144 61% 20%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --color-border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 199 89% 48%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Medical-grade dark mode (default) */
+    --background: 210 100% 6%;     /* #0A192F - Deep Navy */
+    --foreground: 213 31% 91%;     /* Light text */
+    --card: 217 33% 17%;           /* Elevated cards */
+    --card-foreground: 213 31% 91%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 199 89% 48%;        /* #0EA5E9 - Tech Blue */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 142 71% 45%;      /* #22C55E - Neon Green */
+    --secondary-foreground: 144 61% 20%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --color-border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 224 76% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    /* Force dark mode by default */
+  }
+  html, body, #root {
+    @apply h-full w-full m-0 p-0 overflow-auto;
+  }
+  body {
+    @apply bg-space-navy-950 text-foreground font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+  h3 {
+    @apply text-2xl font-semibold;
+  }
+}
+
+/* MapLibre GL overrides */
+@layer utilities {
+  .maplibregl-map {
+    @apply rounded-lg overflow-hidden;
+  }
+}

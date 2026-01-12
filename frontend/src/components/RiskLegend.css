@@ -1,0 +1,122 @@
+/**
+ * Risk Legend Styles
+ */
+
+.risk-legend {
+  position: absolute;
+  bottom: 30px;
+  right: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  z-index: 1000;
+}
+
+.risk-legend.loading {
+  opacity: 0.7;
+}
+
+.legend-header {
+  margin-bottom: 12px;
+}
+
+.legend-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.legend-subtitle {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.3;
+}
+
+.legend-gradient {
+  display: flex;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.legend-stop {
+  flex: 1;
+  transition: transform 0.2s;
+}
+
+.legend-stop:hover {
+  transform: scaleY(1.2);
+  z-index: 1;
+  cursor: help;
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.legend-label-min,
+.legend-label-max {
+  font-weight: 500;
+}
+
+.legend-metadata {
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  margin-top: 8px;
+}
+
+.legend-metadata small {
+  font-size: 10px;
+  color: #888;
+  line-height: 1.4;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .risk-legend {
+    background: #2d3748;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .legend-title {
+    color: #e2e8f0;
+  }
+
+  .legend-subtitle,
+  .legend-labels,
+  .legend-metadata small {
+    color: #a0aec0;
+  }
+
+  .legend-metadata {
+    border-top-color: #4a5568;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .risk-legend {
+    bottom: 20px;
+    right: 10px;
+    min-width: 150px;
+    padding: 12px;
+  }
+
+  .legend-title {
+    font-size: 12px;
+  }
+
+  .legend-subtitle {
+    font-size: 10px;
+  }
+}
